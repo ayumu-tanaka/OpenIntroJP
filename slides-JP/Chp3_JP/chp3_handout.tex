@@ -1,0 +1,85 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 配布用ハンドアウト（解答なし）
+% コンパイルコマンド: lualatex chp3_handout.tex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[slidestop,compress,mathserif,handout]{beamer}
+
+% 解答を非表示にする
+\newcommand{\soln}[1]{ }
+\newcommand{\solnGr}[1]{ }
+
+% 4スライドを1ページに印刷する設定
+\usepackage{pgfpages}
+\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 日本語サポート（LuaLaTeX使用）
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{luatexja}
+\usepackage{luatexja-fontspec}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% スタイル
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{../lec_style_JP}
+
+% 配布用：練習問題の正解を通常アイテムとして表示（オーバーレイなし）
+\renewcommand{\solnMult}[1]{\item #1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% プリアンブル
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[第3章：確率]{第3章：確率}
+\author{OpenIntro Statistics 第4版（日本語版）}
+\institute{$\:$ \\ {\footnotesize 原著スライド：Mine \c{C}etinkaya-Rundel（OpenIntro）\\
+\webLink{http://creativecommons.org/licenses/by-sa/3.0/us/}{CC BY-SA ライセンス}のもと使用・翻訳。\\
+一部の画像はフェアユース（教育目的）に基づき使用。}}
+\date{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ドキュメント開始
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% タイトルページ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{
+\addtocounter{framenumber}{-1}
+{\removepagenumbers
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{../OpenIntro_Grid_4_3-01.jpg}}
+\begin{frame}
+
+\hfill \includegraphics[width=20mm]{../oiLogo_highres}
+
+\titlepage
+
+\end{frame}
+}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 各節
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{3-1_define_probability/3-1_define_probability}
+\input{3-2_conditional_probability/3-2_conditional_probability}
+\input{3-3_sample_from_small_population/3-3_sample_from_small_population}
+\input{3-4_random_variables/3-4_random_variables}
+\input{3-5_continuous_distributions/3-5_continuous_distributions}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ドキュメント終了
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
