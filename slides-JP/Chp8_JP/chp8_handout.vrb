@@ -1,0 +1,24 @@
+\frametitle{}
+
+\pq{次のうち\underline{誤っている}記述はどれか？}
+
+{\footnotesize
+\begin{verbatim}
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)
+(Intercept)       9.20760    9.29990   0.990    0.332
+bioIQ             0.90144    0.09633   9.358  1.2e-09
+
+Residual standard error: 7.729 on 25 degrees of freedom
+Multiple R-squared: 0.7779,	Adjusted R-squared: 0.769
+F-statistic: 87.56 on 1 and 25 DF,  p-value: 1.204e-09
+\end{verbatim}
+}
+
+\begin{enumerate}[(a)]
+\item 実の親に育てられた双子のIQが10ポイント高い場合、養親に育てられた双子のIQは平均的に9ポイント高いと関連づけられる。
+\solnMult{養親に育てられた双子のIQの約78\%はモデルで正確に予測できる。}
+\item 線形モデルは$\widehat{fosterIQ} = 9.2 + 0.9 \times bioIQ$である。
+\item 平均より高いIQを持つ養育双子は、平均より高いIQを持つ実親双子と対応している傾向がある。
+\end{enumerate}
+
