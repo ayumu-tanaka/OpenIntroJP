@@ -1,0 +1,345 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{2つの割合の差}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{北極の氷冠の融解}
+
+\pq{科学者たちは、地球温暖化が今後100年以内に極地域に大きな影響を与える可能性があると予測しています。その一つとして、北極の氷冠が完全に融解する可能性があります。もしそれが実際に起きた場合、あなたはどの程度気になりますか？非常に気になる、ある程度気になる、少し気になる、まったく気にならない？}
+
+\begin{enumerate}[(a)]
+\item 非常に気になる
+\item ある程度気になる
+\item 少し気になる
+\item まったく気にならない
+\end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{GSSの結果}
+
+GSSは同じ質問を行っており、以下は2010年のGSS調査およびデューク大学の入門統計学の学生グループからの回答の分布です：\\
+
+\begin{center}
+\begin{tabular}{l r r}
+\hline
+				& GSS	& デューク大 \\
+\hline
+非常に気になる		& 454	& 69 \\
+ある程度気になる		& 124 	& 30\\
+少し気になる		& 52 		& 4\\
+まったく気にならない	& 50 		& 2 \\
+\hline
+合計				& 680 	& 105\\
+\hline
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{母数（パラメータ）と点推定値}
+
+\begin{itemize}
+
+\item \hl{関心のある母数（パラメータ）：}\orange{全}デューク大学生と\orange{全}アメリカ人のうち、北極の氷冠の完全融解によって非常に気になると答える割合の差。
+\[ \mathhl{ p_{デューク} - p_{米国} }\]
+
+\item \hl{点推定値：}\orange{標本抽出された}デューク大学生と\orange{標本抽出された}アメリカ人のうち、北極の氷冠の完全融解によって非常に気になると答える割合の差。
+\[ \mathhl{ \hat{p}_{デューク} - \hat{p}_{米国} }\]
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{割合を比較するための推測}
+
+\begin{itemize}
+
+\item 詳細は以前と同じです…
+
+\item CI：\textcolor{orange}{$点推定値 \pm 誤差の範囲$}
+
+\item HT：\textcolor{orange}{$Z = \frac{点推定値 - 帰無値}{SE}$}を使って適切なp値を求めます。
+
+\item 点推定値の適切な標準誤差（$SE_{ \hat{p}_{デューク} - \hat{p}_{米国}}$）が唯一の新しい概念です。
+
+\end{itemize}
+
+\formula{2つの標本割合の差の標準誤差}
+{
+\[ SE_{(\hat{p}_1 - \hat{p}_2)} = \sqrt{ \frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2} } \]
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{割合の差の信頼区間}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{割合の差のCIの条件}
+
+\begin{enumerate}
+
+\item \hl{グループ内の独立性：}
+\begin{itemize}
+\item 米国グループは無作為に標本抽出されており、デューク大学グループも無作為標本を代表していると仮定します。
+\item 105 $<$ 全デューク大学生の10\%、680 $<$ 全アメリカ人の10\%です。
+\end{itemize}
+標本内のデューク大学生の態度は互いに独立しており、標本内の米国住民の態度も互いに独立していると仮定できます。
+
+\item \hl{グループ間の独立性：}
+標本抽出されたデューク大学生と米国住民は互いに独立しています。
+
+\item \hl{成功・失敗条件：}\\
+2つのグループで少なくとも10の観測された成功と10の観測された失敗があること。
+
+\end{enumerate}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\dq{北極の氷冠の融解によって非常に気になると答えるデューク大学生とアメリカ人の割合の差\orange{($p_{デューク} - p_{米国}$)}について、95\%信頼区間を構築してください。}
+
+{\footnotesize
+\begin{center}
+\begin{tabular}{l | c c}
+データ			& デューク大	& 米国 \\
+\hline
+非常に気になる	& 69			& 454 \\
+それ以外		& 36			& 226 \\
+\hline
+合計			& 105		& 680 \\
+\hline
+$\hat{p}$		& 0.657		& 0.668
+\end{tabular}
+\end{center}
+}
+
+\soln{
+\begin{eqnarray*}
+&& (\hat{p}_{D} - \hat{p}_{US}) \pm z^\star \times \sqrt{ \tfrac{ \hat{p}_{D} (1 - \hat{p}_{D})}{n_{D} } + \tfrac{ \hat{p}_{US} (1 -  \hat{p}_{US})}{n_{US} } }  \\
+&=& (0.657 - 0.668) \pm 1.96 \times \sqrt{ \tfrac{0.657 \times 0.343}{105} + \tfrac{0.668 \times 0.332}{680} } \\
+&=& -0.011 \pm 1.96 \times 0.0497 \\
+&=& -0.011 \pm 0.097 \\
+&=& (-0.108, 0.086)
+\end{eqnarray*}
+}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{割合を比較するための仮説検定}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\pq{北極の氷冠の融解によって非常に気になると答えるデューク大学生全体の割合が、同様に答えるアメリカ人全体の割合と異なるかどうかを検定するための正しい仮説の組み合わせはどれですか？}
+
+\begin{enumerate}[(a)]
+\solnMult{ $H_0:  p_{デューク} = p_{米国}$ \\
+$H_A:  p_{デューク} \ne p_{米国}$ }
+\item $H_0:  \hat{p}_{デューク} = \hat{p}_{米国}$ \\
+$H_A:  \hat{p}_{デューク} \ne \hat{p}_{米国}$
+\solnMult{ $H_0:  p_{デューク} - p_{米国} = 0$ \\
+$H_A:  p_{デューク} - p_{米国} \ne 0$ }
+\item $H_0:  p_{デューク} = p_{米国}$ \\
+$H_A:  p_{デューク} < p_{米国}$
+\end{enumerate}
+
+\soln{
+\orange{(a)と(c)の両方が正しいです。}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{1つの割合の検定への振り返り}
+
+\begin{itemize}
+
+\item 母集団の割合の信頼区間を構築する際は、\orange{観測された}成功数と失敗数が少なくとも10であるか確認します。
+\[ n\hat{p} \ge 10 \qquad \qquad n(1-\hat{p}) \ge 10 \]
+
+\item 母集団の割合の仮説検定を行う際は、\orange{期待される}成功数と失敗数が少なくとも10であるか確認します。
+\[ np_0 \ge 10 \qquad \qquad n(1-p_0) \ge 10 \]
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{割合のプールされた推定値}
+
+\begin{itemize}
+
+\item $H_0: p_1 = p_2$の場合に2つの割合を比較する際、各標本の\orange{期待される}成功数と失敗数を計算するために使える与えられた帰無値がありません。
+
+\item そのため、まず2つのグループに共通の（\hl{プールされた}）割合を求め、それを分析に使用する必要があります。
+
+\item これは単純に、観測総数のうちの成功の総数の割合を求めることを意味します。
+
+\end{itemize}
+
+$\:$ \\
+
+\formula{割合のプールされた推定値}
+{ \[ \hat{p} = \frac{\text{成功数}_1 + \text{成功数}_2}{n_1 + n_2} \] }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\dq{北極の氷冠の融解によって非常に気になると答えるデューク大学生とアメリカ人の\underline{プールされた割合}を計算してください。プールされた推定値はどちらの標本割合（$\hat{p}_{デューク}$または$\hat{p}_{米国}$）に近いですか？なぜですか？}
+
+{\footnotesize
+\begin{center}
+\begin{tabular}{l | c c}
+データ			& デューク大	& 米国 \\
+\hline
+非常に気になる	& 69			& 454 \\
+それ以外		& 36			& 226 \\
+\hline
+合計			& 105		& 680 \\
+\hline
+$\hat{p}$		& 0.657		& 0.668
+\end{tabular}
+\end{center}
+}
+
+\soln{
+\begin{eqnarray*}
+\hat{p} &=& \frac{\text{成功数}_1 + \text{成功数}_2}{n_1 + n_2} \\
+&=& \frac{69+454}{105+680} = \frac{523}{785} = 0.666
+\end{eqnarray*}
+}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{}
+
+\dq{これらのデータは、北極の氷冠の融解によって非常に気になると答えるデューク大学生全体の割合が、同様に答えるアメリカ人全体の割合と異なることを示唆していますか？検定統計量、p値を計算し、データの文脈で結論を解釈してください。}
+
+{\footnotesize
+\begin{center}
+\begin{tabular}{l | c c}
+データ			& デューク大	& 米国 \\
+\hline
+非常に気になる	& 69			& 454 \\
+それ以外		& 36			& 226 \\
+\hline
+合計			& 105		& 680 \\
+\hline
+$\hat{p}$		& 0.657		& 0.668
+\end{tabular}
+\end{center}
+}
+
+\soln{
+\begin{eqnarray*}
+Z &=& \frac{(\hat{p}_{デューク} - \hat{p}_{米国})}{\sqrt{ \frac{ \hat{p} (1 - \hat{p})}{n_{デューク} } + \frac{ \hat{p} (1 -  \hat{p})}{n_{米国} } }} \\
+&=& \frac{(0.657 - 0.668)}{\sqrt{ \frac{0.666 \times 0.334}{105} + \frac{0.666 \times 0.334}{680} }} = \frac{-0.011}{0.0495} = -0.22 \\
+p\text{値} &=& 2 \times P(Z < -0.22) = 2 \times 0.41 = 0.82
+\end{eqnarray*}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{まとめ}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{まとめ - 2つの割合の比較}
+
+\begin{itemize}
+
+\item 母集団のパラメータ：$(p_1 - p_2)$、点推定値：$(\hat{p}_1 - \hat{p}_2)$
+
+\item 条件：
+\begin{itemize}
+\item グループ内の独立性 \\
+- 両グループで無作為標本かつ10\%条件を満たす
+\item グループ間の独立性
+\item 各グループで少なくとも10の成功と失敗\\
+- 満たさない場合 $\rightarrow$ 無作為化（6.4節）
+\end{itemize}
+
+\item $SE_{(\hat{p}_1 - \hat{p}_2)} = \sqrt{ \frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2} }$
+\begin{itemize}
+\item CIの場合：$\hat{p}_1$と$\hat{p}_2$を使用
+\item HTの場合：
+\begin{itemize}
+\item $H_0: p_1 = p_2$の場合：$\hat{p}_{pool} = \frac{\text{成功}_1 + \text{成功}_2}{n_1 + n_2}$を使用
+\item $H_0: p_1 - p_2 = $ \textit{（0以外の値）}の場合：$\hat{p}_1$と$\hat{p}_2$を使用 \\
+- これはかなり稀
+\end{itemize}
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{参考 - 標準誤差の計算}
+
+\begin{center}
+\begin{tabular}{l | l | l}
+			& 1標本					& 2標本 \\
+\hline
+& & \\
+平均		& $SE = \frac{s}{\sqrt{n}}$			& $SE = \sqrt{ \frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$ \\
+& & \\
+\hline
+& & \\
+割合		& $SE = \sqrt{ \frac{p(1-p)}{n} }$	& $SE = \sqrt{ \frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2} }$	 \\
+& & \\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+
+\item 平均を扱う場合、$\sigma$が既知であることは非常に稀なので、通常$s$を使用します。
+
+\item 割合を扱う場合、
+\begin{itemize}
+\item 仮説検定を行う場合、$p$は帰無仮説から来ます
+\item 信頼区間を構築する場合、代わりに$\hat{p}$を使用します
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
