@@ -1,0 +1,28 @@
+\frametitle{}
+
+\begin{beamerboxesrounded}[shadow = true, lower = code body]{}
+{
+\small
+\begin{verbatim}
+
+# 1. Create a set of 250 million entries, where 88% of
+# them are "support" and 12% are "not".
+
+pop_size <- 250000000
+possible_entries <- c(rep("support", 0.88 * pop_size),
+                      rep("not", 0.12 * pop_size))
+
+
+# 2. Sample 1000 entries without replacement.
+
+sampled_entries <- sample(possible_entries, size = 1000)
+
+# 3. Compute p-hat: count the number that are "support",
+# then divide by # the sample size.
+
+sum(sampled sampled_entries == "support") / 1000
+
+\end{verbatim}
+}
+\end{beamerboxesrounded}
+
