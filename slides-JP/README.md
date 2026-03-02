@@ -21,7 +21,7 @@ _OpenIntro Statistics_ の各章に対応するプレゼンテーションスラ
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />
 本ページは、[Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)の下に提供されています。
 
-元サイト：https://github.com/OpenIntroStat/openintro-statistics-slides
+元サイト：[https://github.com/OpenIntroStat/openintro-statistics-slides](https://github.com/OpenIntroStat/openintro-statistics-slides)
 
 
 
