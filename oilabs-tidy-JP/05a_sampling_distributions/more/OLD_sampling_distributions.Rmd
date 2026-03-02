@@ -1,0 +1,318 @@
+---
+title: "統計的推論の基礎 - 標本分布"
+runtime: shiny
+output:
+  html_document:
+    css: www/lab.css
+    highlight: pygments
+    theme: cerulean
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+library(tidyverse)
+library(openintro)
+library(infer)
+```
+
+
+このラボでは、データのランダムサンプルからの統計量が、母集団パラメータの点推定値としてどのように機能するかを調査します。
+推定値の分布などの特性について学習するために、推定値の*標本分布*を定式化することに関心があります。
+
+<div id="boxedtext">
+**シードの設定:** このラボではいくつかのランダムサンプルを取り、標本分布を構築します。これは、ラボの開始時にシードを設定する必要があることを意味します。
+この概念が初めての場合は、確率に関するラボをレビューしてください。
+</div>
+
+## はじめに
+
+### パッケージの読み込み
+
+
+このラボでは、**tidyverse** スイートのパッケージを使用してデータを探索および視覚化します。
+再サンプリングには**infer**パッケージも使用します。
+
+パッケージを読み込みましょう。
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(infer)
+```
+
+### 再現可能なラボレポートの作成
+
+
+新しいラボレポートを作成するには、新しいR Markdownドキュメントを開き、「From Template」を選択してから、**openintro**パッケージのリストから「Lab Report」を選択します。
+
+### データ
+
+
+アイオワ州エイムズ市の不動産データを分析します。
+エイムズで行われたすべての不動産取引の詳細は、市のアセッサーオフィスによって記録されています。
+このラボでのあなたの特定の焦点は、2006年から2010年までのエイムズにおけるすべての住宅販売です。
+このコレクションは、あなたの関心のある母集団を表します。
+このラボでは、母集団全体から小さなサンプルを取ることによって、これらの住宅販売について学習します。
+データを読み込みましょう。
+
+```{r load-data}
+data(ames)
+```
+
+
+データセットには非常に多くの変数があり、非常に詳細な分析を行うのに十分な量であることがわかります。
+このラボでは、`area`（平方フィート単位の家屋の地上居住面積）と`price`（販売価格）の2つの変数のみに焦点を当てます。
+
+住宅販売の母集団における家屋の面積の分布を、視覚的および要約統計量で探索できます。
+まず、視覚化、つまりヒストグラムを作成しましょう。
+
+```{r area-hist}
+ggplot(data = ames, aes(x = area)) +
+  geom_histogram(binwidth = 250)
+```
+
+
+いくつかの要約統計量も取得しましょう。
+これを行うには`summarise`関数を使用できることに注意してください。
+この関数を使用して、必要なだけ多くの統計量を計算し、結果を結合することができます。
+以下の関数の一部は自明なはずです（`mean`、`median`、`sd`、`IQR`、`min`、`max`など）。
+ここで新しい関数は`quantile`関数で、これを使用して分布における特定のパーセンタイルカットオフに対応する値を計算できます。
+例えば、`quantile(x, 0.25)`は`x`の分布における25パーセンタイル（Q1）のカットオフ値を生成します。
+これらの値を見つけることは、たとえば「住宅の中央50%の面積は〜平方フィートの間である」といった記述に使用できるため、分布を記述するのに役立ちます。
+
+```{r area-stats}
+ames %>%
+  summarise(mu = mean(area), pop_med = median(area),
+            sigma = sd(area), pop_iqr = IQR(area),
+            pop_min = min(area), pop_max = max(area),
+            pop_q1 = quantile(area, 0.25),  # first quartile, 25th percentile
+            pop_q3 = quantile(area, 0.75))  # third quartile, 75th percentile
+```
+
+1.  上記の可視化と要約統計量を使用して、この母集団分布を記述してください。
+    記述ですべての要約統計量を使用する必要はなく、分布の形状に基づいて関連するものを決定する必要があります。
+    プロットと要約統計量の出力をあなたの記述とともにレポートに含めるようにしてください。
+
+## 未知の標本分布
+
+
+このラボでは、母集団全体にアクセスできますが、これは実生活ではめったにありません。
+母集団全体に関する情報を収集することは、非常に費用がかかるか、不可能であることがよくあります。
+このため、私たちは母集団のサンプルを採取し、それを使用して母集団の特性を理解することがよくあります。
+
+エイムズの平均居住面積をサンプルに基づいて推定することに関心がある場合、`sample_n`コマンドを使用して母集団を調査できます。
+
+```{r samp1}
+samp1 <- ames %>%
+  sample_n(50)
+```
+
+
+このコマンドは、`ames`データセットからサイズ50の単純ランダムサンプルを収集し、その結果を`samp1`に割り当てます。
+これは、都市評価人のデータベースにアクセスして、50件のランダムな住宅販売ファイルを取り出すのと似ています。
+これらの50個のファイルで作業することは、2930件すべての住宅販売で作業するよりもはるかに簡単です。
+
+1.  このサンプルにおける面積の分布を記述してください。母集団の分布とどのように比較されますか？ **ヒント:** `sample_n`関数はデータセットからランダムな観測値（つまり行）をサンプリングしますが、データセット内の変数を同じ名前で参照することはできます。前の演習で使用したコードは、サンプルを視覚化および要約するためにも役立ちますが、これらは標本統計量であり母集団パラメータではないため、`mu`や`sigma`という値にラベルを付けないように注意してください。統計量のラベルをカスタマイズして、これらがサンプルから来ていることを示すことができます。
+
+
+サンプルを使用してエイムズの住宅の平均居住面積を推定することに関心がある場合、あなたの最良の単一の推測は標本平均です。
+
+```{r mean-samp1}
+samp1 %>%
+  summarise(x_bar = mean(area))
+```
+
+
+あなたが選んだ50件の住宅によって、あなたの推定値は真の母集団平均`r round(mean(ames$area),2)`平方フィートよりわずかに上または下になる可能性があります。
+しかし、一般的に、標本平均は平均居住面積のかなり良い推定値であることが判明し、母集団の3%未満をサンプリングするだけでそれを得ることができました。
+
+2.  あなたのサンプルの平均が、他のチームのサンプルの平均と一致すると予想しますか？
+    その理由は何ですか？
+    もし答えが「いいえ」の場合、平均は多少異なりますか、それとも大きく異なりますか？
+    隣のチームにあなたの答えを確認させてください。
+
+3.  サイズ50の2番目のサンプルを取り、`samp2`と名付けてください。
+    `samp2`の平均は`samp1`の平均とどのように比較されますか？
+    サイズ100とサイズ1000の2つのサンプルをさらに取ったとします。
+    どちらが母集団平均のより正確な推定値を提供すると考えますか？
+
+
+当然のことながら、別のランダムサンプルを取るたびに、異なる標本平均が得られます。
+この方法で母集団平均を推定する際に、どれくらいの変動性を期待すべきかを知ることは有用です。
+標本平均の分布は、*標本分布（平均の）*と呼ばれ、この変動性を理解するのに役立ちます。
+このラボでは、母集団にアクセスできるため、上記の手順を何度も繰り返すことで、標本平均の標本分布を構築できます。
+ここでは、15,000個のサンプルを生成し、それぞれの標本平均を計算します。
+標本分布は置換サンプリングによって構築されるため、`replace = TRUE`を指定していることに注意してください。
+
+```{r loop}
+sample_means50 <- ames %>%
+                    rep_sample_n(size = 50, reps = 15000, replace = TRUE) %>%
+                    summarise(x_bar = mean(area))
+
+ggplot(data = sample_means50, aes(x = x_bar)) +
+  geom_histogram(binwidth = 20)
+```
+
+
+ここでは、Rを使用して母集団からサイズ50の異なる15,000個のサンプルを抽出し、各サンプルの平均を計算し、各結果を`sample_means50`というベクトルに保存します。
+次に、このコードのセットがどのように機能するかを確認します。
+
+4.  `sample_means50`にはいくつの要素がありますか？
+    標本分布を記述し、特にその中心に注目してください。
+    回答には必ず分布のプロットを含めてください。
+
+## 間奏：標本分布
+
+
+`rep_sample_n`関数の背後にある考え方は*反復*です。
+以前、あなたはエイムズのすべての家屋の母集団からサイズ`n`（50）の単一のサンプルを取りました。
+この新しい関数を使用すると、このサンプリング手順を`rep`回繰り返して、一連の標本統計量の分布を構築できます。これを**標本分布**と呼びます。
+
+実際には、真の標本分布を構築することはめったにありません。なぜなら、母集団全体からのデータにアクセスできることはめったにないからです。
+
+`rep_sample_n`関数がなければ、これは大変な作業になるでしょう。
+以下のコードを15,000回手動で実行する必要がありました。
+
+```{r sample-code, eval=FALSE}
+ames %>%
+  sample_n(size = 50) %>%
+  summarise(x_bar = mean(area))
+```
+
+
+さらに、結果として得られる標本平均を毎回別々のベクトルに保存します。
+
+15,000回それぞれ平均を計算したとき、**異なる**サンプルから計算したことに注意してください！
+
+5.  標本分布がどのように構築されるか、そして`rep_sample_n`関数が正確に何をするかを理解するために、コードを変更して**サイズ10のサンプル**から**25個の標本平均**の標本分布を作成し、それらを`sample_means_small`というデータフレームに入れてみてください。出力を表示してください。`sample_means_small`というオブジェクトにはいくつの観測値がありますか？各観測値は何を表していますか？
+
+## 標本サイズと標本分布
+
+
+メカニズムはさておき、`rep_sample_n`関数を使用した理由に戻りましょう。標本分布、特に50件の住宅のサンプルにおける平均住宅面積の標本分布を計算するためです。
+
+```{r hist}
+ggplot(data = sample_means50, aes(x = x_bar)) +
+  geom_histogram(binwidth = 20)
+```
+
+
+あなたが計算した標本分布は、エイムズの住宅の平均居住面積を推定することについて多くのことを教えてくれます。
+標本平均は不偏推定量であるため、標本分布は母集団の真の平均居住面積を中心とし、分布の広がりは、50件の住宅販売のみをサンプリングすることによって生じる変動性の大きさを表します。
+
+このセクションの残りの部分では、標本サイズが標本分布に与える影響を理解することに取り組みます。
+
+6.  以下のアプリを使用して、サイズ10、50、100のサンプルから`area`の平均の標本分布を作成してください。5,000回のシミュレーションを使用してください。標本分布の各観測値は何を表していますか？標本サイズが増加するにつれて、標本分布の平均、標準誤差、形状はどのように変化しますか？シミュレーションの数を増やした場合、これらの値はどのように（もし変化するなら）変化しますか？（回答にプロットを含める必要はありません。）
+
+```{r shiny, echo=FALSE, eval=TRUE}
+shinyApp(
+  ui <- fluidPage(
+
+    # Sidebar with a slider input for number of bins
+    sidebarLayout(
+      sidebarPanel(
+
+        selectInput("selected_var",
+                    "Variable:",
+                    choices = list("area", "price"),
+                    selected = "area"),
+
+        numericInput("n_samp",
+                     "Sample size:",
+                     min = 1,
+                     max = nrow(ames),
+                     value = 30),
+
+        numericInput("n_sim",
+                     "Number of samples:",
+                     min = 1,
+                     max = 30000,
+                     value = 15000)
+
+      ),
+
+      # Show a plot of the generated distribution
+      mainPanel(
+        plotOutput("sampling_plot"),
+        verbatimTextOutput("sampling_mean"),
+        verbatimTextOutput("sampling_se")
+      )
+    )
+  ),
+
+  # Define server logic required to draw a histogram
+  server <- function(input, output) {
+
+    # create sampling distribution
+    sampling_dist <- reactive({
+      ames[[input$selected_var]] %>%
+        sample(size = input$n_samp * input$n_sim, replace = TRUE) %>%
+        matrix(ncol = input$n_samp) %>%
+        rowMeans() %>%
+        data.frame(x_bar = .)
+    })
+
+    # plot sampling distribution
+    output$sampling_plot <- renderPlot({
+      x_min <- quantile(ames[[input$selected_var]], 0.1)
+      x_max <- quantile(ames[[input$selected_var]], 0.9)
+
+      ggplot(sampling_dist(), aes(x = x_bar)) +
+        geom_histogram() +
+        xlim(x_min, x_max) +
+        ylim(0, input$n_sim * 0.35) +
+        ggtitle(paste0("Sampling distribution of mean ",
+                       input$selected_var, " (n = ", input$n_samp, ")")) +
+        xlab(paste("mean", input$selected_var)) +
+        theme(plot.title = element_text(face = "bold", size = 16))
+    })
+
+    # mean of sampling distribution
+    output$sampling_mean <- renderText({
+      paste0("mean of sampling distribution = ", round(mean(sampling_dist()$x_bar), 2))
+    })
+
+    # mean of sampling distribution
+    output$sampling_se <- renderText({
+      paste0("SE of sampling distribution = ", round(sd(sampling_dist()$x_bar), 2))
+    })
+  },
+
+  options = list(height = 500)
+)
+```
+
+
+* * *
+
+## さらなる演習
+
+
+これまで、エイムズの住宅の平均居住面積を推定することにのみ焦点を当ててきました。
+次に、平均住宅価格を推定してみます。
+
+これらの質問のいくつかはアプリを使用して答えられるかもしれませんが、必要なコードを記述し、必要なプロットと要約統計量を生成することが期待されます。
+探索のためにアプリを使用することは歓迎します。
+
+1.  母集団からサイズ15のサンプルを取り、このサンプル中の住宅の平均`price`を計算してください。
+    このサンプルを使用して、住宅の価格の母集団平均の最良の点推定値は何ですか？
+
+2.  母集団にアクセスできるので、母集団からサイズ15の2000個のサンプルを取り、2000個の標本平均を計算することで、サイズ15のサンプルの$\overline{price}$の標本分布をシミュレートしてください。
+    これらの平均を`sample_means15`というベクトルに保存してください。
+    データをプロットし、この標本分布の形状を記述してください。
+    この標本分布に基づいて、エイムズの住宅の平均販売価格はいくらだと推測しますか？
+    最後に、母集団平均を計算して報告してください。
+
+3.  サンプルサイズを15から150に変更し、上記と同じ方法で標本分布を計算し、これらの平均を`sample_means150`という新しいベクトルに保存してください。
+    この標本分布の形状を記述し、サイズ15のサンプルの標本分布と比較してください。
+    この標本分布に基づいて、エイムズの住宅の平均販売価格はいくらだと推測しますか？
+
+4.  2と3の標本分布のうち、広がりが小さいのはどちらですか？
+    真の値に近い推定値をより頻繁に行うことを気にする場合、広がりが大きい標本分布と小さい標本分布のどちらを好みますか？
+
+<div id="license">
+これは、[Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0)の下でリリースされたOpenIntroの製品です。
+このラボはAndrew BrayとMine &Ccedil;etinkaya-RundelによってOpenIntroのために書かれました。
+</div>
