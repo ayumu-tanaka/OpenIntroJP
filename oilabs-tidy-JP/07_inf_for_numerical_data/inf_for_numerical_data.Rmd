@@ -1,0 +1,202 @@
+---
+title: '数値データの推論'
+output:
+  html_document:
+    css: ../lab.css
+    highlight: pygments
+    theme: cerulean
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE, fig.show = "hide", message = FALSE)
+```
+
+## はじめに
+
+### パッケージの読み込み
+
+
+このラボでは、**tidyverse** スイートのパッケージを使用してデータを探索および視覚化し、**infer** を使用して統計的推論を実行します。
+データはOpenIntroリソースのコンパニオンパッケージ**openintro**で見つけることができます。
+
+パッケージを読み込みましょう。
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+library(infer)
+library(skimr)
+```
+
+### 再現可能なラボレポートの作成
+
+
+新しいラボレポートを作成するには、RStudioで「New File」->「R Markdown...」に移動し、「From Template」を選択してから、テンプレートのリストから「Lab Report for OpenIntro Statistics Labs」を選択します。
+
+### データ
+
+
+2年ごとに、疾病対策センターは青年リスク行動監視システム（YRBSS）調査を実施しており、高校生（9年生から12年生）からデータを収集して健康パターンを分析しています。
+あなたは、YRBSSが実施された年のうちの1年間の観察のランダムサンプルから選択された変数のグループを扱います。
+
+`yrbss`データセットをワークスペースに読み込みます。
+
+```{r load-data}
+data(yrbss)
+```
+
+
+13種類の変数に関する観測値があり、そのうちいくつかはカテゴリカル変数で、いくつかは数値変数です。
+各変数の意味は、ヘルプファイルを表示することで確認できます。
+
+```{r help-nc}
+?yrbss
+```
+
+1.  このデータセットのケースは何ですか？サンプルにはいくつのケースがありますか？
+
+
+データビューアでデータを表示するか、以下のコマンドを使用することでこの質問に答えることができることを覚えておいてください。
+
+```{r str}
+glimpse(yrbss)
+```
+
+## 探索的データ分析
+
+
+最初に、参加者の体重（キログラム）である`weight`の分析から始めます。
+
+視覚化と要約統計量を使用して、体重の分布を記述してください。
+**skimr**パッケージの`skim()`関数は、データセット内の変数のきれいな要約を生成し、カテゴリカル変数（文字）と量的変数を分離します。
+
+```{r summary}
+yrbss |>
+  skim()
+```
+
+1.  体重のデータが欠落している観測値はいくつありますか？
+
+
+次に、高校生の体重と身体活動の間に考えられる関係を検討します。
+データをプロットすることは、傾向を素早く視覚化し、強い関連性を特定し、研究課題を開発するのに役立つため、有用な最初のステップです。
+
+まず、`physical_3plus`という新しい変数を作成します。これは、学生が週に*少なくとも*3日以上身体活動を行う場合は「yes」、そうでない場合は「no」とコード化されます。
+
+```{r create new var}
+yrbss <- yrbss |>
+  mutate(physical_3plus = if_else(physically_active_7d > 2, "yes", "no"))
+```
+
+2.  `physical_3plus`と`weight`の並列バイオリンプロットを作成してください。これら2つの変数の間に関係はありますか？何を期待しましたか、またその理由は何ですか？
+
+
+箱ひげ図は2つの分布の中央値がどのように比較されるかを示していますが、`physical_3plus`変数でデータを最初にグループ化し、次に`na.rm`引数を`TRUE`に設定して欠損値を無視しながら`mean`関数を使用してこれらのグループの平均`weight`を計算することで、分布の平均を比較することもできます。
+
+```{r by-means}
+yrbss |>
+  group_by(physical_3plus) |>
+  summarise(mean_weight = mean(weight, na.rm = TRUE))
+```
+
+
+観察された差異はありますが、この差異は「統計的に有意」と見なせるほど大きいでしょうか？
+この質問に答えるために、仮説検定を実施します。
+
+## 推論
+
+3.  推論に必要なすべての条件は満たされていますか？
+    それぞれについてコメントしてください。
+    上記の`summarize`コマンドで、`n()`という定義の新しい変数を定義することで、グループサイズを計算できます。
+
+4.  週に少なくとも3回運動するグループとそうでないグループの平均体重が異なるかどうかをテストするための仮説を記述してください。
+
+
+次に、**infer**パッケージのツールを使用して順列分布を作成する作業を行います。
+
+しかし、まずテストを初期化する必要があります。これを`obs_diff`として保存します。
+
+```{r inf-weight-habit-ht-initial, tidy=FALSE, warning = FALSE}
+obs_diff <- yrbss |>
+  select(weight, physical_3plus) |>
+  drop_na() |>
+  specify(weight ~ physical_3plus) |>
+  calculate(stat = "diff in means", order = c("yes", "no"))
+```
+
+
+`specify()`関数は考慮している変数（`y ~ x`と表記）を指定するために使用され、`calculate()`関数は計算したい`stat`isticと使用したい減算の`order`を指定するために使用できることを思い出してください。
+この仮説の場合、探している統計量は平均の差であり、順序は`yes - no`です。
+
+ここでは欠損値がないことを確認する必要があるため、必要な変数のサブセットを`select()`してから`drop_na()`を実行します。
+
+観測された統計量を計算したら、順列分布を作成する必要があります。
+これは、観測された体重を新しい`physical_3plus`グループ（「yes」と「no」のラベル付き）にシャッフルすることで作成される分布です。
+
+順列分布を`null_dist`として保存します。
+
+```{r inf-weight-habit-ht-null, tidy=FALSE, warning = FALSE}
+null_dist <- yrbss |>
+  select(weight, physical_3plus) |>
+  drop_na() |>
+  specify(weight ~ physical_3plus) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in means", order = c("yes", "no"))
+```
+
+
+`hypothesize()`関数は帰無仮説を宣言するために使用されます。
+ここでは、学生の体重が、週に少なくとも3日運動するかどうかとは独立していると仮定しています。
+
+また、`generate()`内の`type`引数が`"permute"`に設定されていることにも注意してください。
+これにより、`calculate()`関数によって計算される統計量がデータの再シャッフル（データの再サンプリングではない！）から得られることが保証されます。
+最後に、`specify()`と`calculate()`のステップは見覚えがあるはずです。これらは、平均の観測された差を見つけるために使用したものと同じだからです！
+
+以下のコードでこの帰無分布を視覚化できます。
+
+```{r}
+ggplot(data = null_dist, aes(x = stat)) +
+  geom_histogram()
+```
+
+5.  上記のプロットに赤い垂直線を追加し、平均の観測された差 (`obs_diff`) が分布のどこに位置するかを示してください。
+
+6.  これらの`null_dist`順列のうち、`obs_diff`と少なくとも同じくらい大きい（またはそれ以上大きい）差を持つものはいくつありますか？
+
+
+これで観測された統計量を計算し、順列分布を生成したので、inferパッケージの`get_p_value()`関数を使用して仮説検定のp値を計算できます。
+
+```{r inf-weight-habit-ht-pvalue}
+null_dist |>
+  get_p_value(obs_stat = obs_diff, direction = "two_sided")
+```
+
+7.  どのような警告メッセージが表示されますか？
+    なぜこの警告メッセージが表示されると思いますか？
+
+8.  週に少なくとも3回運動するグループとそうでないグループの体重の差の信頼区間を構築し、記録し、データのコンテキストでこの区間を解釈してください。
+
+------------------------------------------------------------------------
+
+## さらなる演習
+
+9.  身長（`height`）の平均値に対する95%信頼区間を計算し、その文脈で解釈してください。
+
+10. 同じパラメータに対して90%信頼水準で新しい信頼区間を計算してください。
+    この区間の幅と前の演習で得られた区間の幅についてコメントしてください。
+
+11. 週に少なくとも3回運動するグループとそうでないグループの平均身長が異なるかどうかを評価する仮説検定を実施してください。
+
+12. さて、非推論タスクです。データセットには、`hours_tv_per_school_day`についていくつの異なるオプションがあるかを確認してください。
+
+13. 身長または体重と睡眠の関係を評価する研究課題を考案してください。
+    仮説検定や信頼区間を使用して回答できるような形式で質問を定式化してください。
+    統計的結果を報告し、平易な言葉で説明も提供してください。
+    すべての仮定を確認し、$\alpha$水準を明記し、文脈に沿って結論を述べてください。
+
+------------------------------------------------------------------------
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">![Creative Commons License](https://i.creativecommons.org/l/by-sa/4.0/88x31.png){style="border-width:0"}</a><br />この作品は、<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">クリエイティブ・コモンズ 表示 - 継承 4.0 国際ライセンス</a>の下に提供されています。
