@@ -2,7 +2,7 @@
 
 ## 日本語版スライド
 
-_OpenIntro Statistics_ の各章に対応するプレゼンテーションスライドの日本語版が含まれています。内容は、元の英語版スライドを翻訳したものです。統計学の基本的な概念や手法をわかりやすく説明しています。
+_OpenIntro Statistics_ の各章に対応するプレゼンテーションスライドの日本語版が含まれています。内容は、[元の英語版スライド](https://github.com/OpenIntroStat/openintro-statistics-slides)を翻訳したものです。統計学の基本的な概念や手法をわかりやすく説明しています。
 
 - [第 1 章: データ入門](Chp1_JP/chp1.pdf) [[handout](Chp1_JP/chp1_handout.pdf)]
 - [第 2 章: データの要約](Chp2_JP/chp2.pdf) [[handout](Chp2_JP/chp2_handout.pdf)]
@@ -16,6 +16,8 @@ _OpenIntro Statistics_ の各章に対応するプレゼンテーションスラ
 
 
 
-## ライセンス
+* * *
 
-本プロジェクトの各リソースは、元のOpenIntro Materialsのライセンス、[Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)の下に提供されています。詳細については、各ファイルまたはディレクトリ内のライセンス表示をご参照ください。
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />
+本ページは、元のOpenIntro Materialsのライセンス、[Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)の下に提供されています。
+
