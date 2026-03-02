@@ -21,5 +21,8 @@ _OpenIntro Statistics_ に付随する[Rラボ教材のTidyverse版](https://git
 * * *
 
 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />
-本ページは、元のOpenIntro Materialsのライセンス、[Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)の下に提供されています。
+本ページは、[Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/)の下に提供されています。
+
+元サイト：https://github.com/OpenIntroStat/oilabs-tidy
+
 
