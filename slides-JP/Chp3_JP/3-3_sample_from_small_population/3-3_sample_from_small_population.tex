@@ -1,0 +1,157 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{少ない母集団からの標本抽出}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[shrink=10]
+\frametitle{復元抽出}
+
+\hl{復元抽出}では、引いたものを元に戻す。
+
+\begin{itemize}
+
+\item 赤チップ5個、青チップ3個、オレンジチップ2個が入った袋があるとする。最初に引いたチップが青である確率は何か？
+\begin{center}
+5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+
+\[ Prob(1\text{番目のチップが青}) = \frac{3}{5 + 3 + 2} = \frac{3}{10} = 0.3 \]
+
+\item 1回目の引きで青チップを引いたとする。復元抽出で引く場合、2回目の引きで青チップを引く確率は何か？
+
+\begin{center}
+$1\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$} \\
+
+$2\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+
+\[ Prob(2\text{番目のチップが青} | 1\text{番目のチップが青}) = \frac{3}{10} = 0.3 \]
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{復元抽出（続き）}
+
+\begin{itemize}
+
+\item 1回目の引きでオレンジチップを引いたとする。復元抽出で引く場合、2回目の引きで青チップを引く確率は何か？
+
+\begin{center}
+$1\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$} \\
+$2\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+\[ Prob(2\text{番目のチップが青} | 1\text{番目のチップがオレンジ}) = \frac{3}{10} = 0.3 \]
+
+\item 復元抽出で、2回続けて青チップを引く確率は何か？
+\begin{center}
+
+$1\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$} \\
+$2\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+\footnotesize
+\[ Prob(1\text{番目のチップが青}) \cdot Prob(2\text{番目のチップが青} | 1\text{番目のチップが青}) \]
+\[ = 0.3 \times 0.3 \]
+\[ = 0.3^2 = 0.09 \]
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[shrink=20]
+\frametitle{復元抽出（続き）}
+
+\begin{itemize}
+
+\item 復元抽出では、2番目のチップが青である確率は、1番目のチップの色に依存しない。なぜなら、1回目に引いたものを袋に戻すからである。
+\[ Prob(\text{青} | \text{青}) = Prob(\text{青} | \text{オレンジ}) \]
+
+\item さらに、この確率は1番目のチップが青である確率と等しい。なぜなら、復元抽出では袋の構成が変わらないからである。
+\[ Prob(\text{青} | \text{青}) = Prob(\text{青}) \]
+
+\item \hl{復元抽出では、引き操作は独立である。}
+
+\end{itemize}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{非復元抽出}
+
+\hl{非復元抽出}では、引いたものを元に戻さない。
+
+\begin{itemize}
+
+\item 1回目の引きで青チップを引いたとする。非復元抽出で引く場合、2回目の引きで青チップを引く確率は何か？
+\begin{center}
+$1\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$} \\
+$2\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 2 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+\[ Prob(2\text{番目のチップが青} | 1\text{番目のチップが青}) = \frac{2}{9} = 0.22 \]
+
+\item 非復元抽出で、2回続けて青チップを引く確率は何か？
+\begin{center}
+
+$1\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 3 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$} \\
+$2\text{回目}$: 5 \textcolor{red}{$\CIRCLE$}~, 2 \textcolor{blue}{$\CIRCLE$}~, 2 \textcolor{orange}{$\CIRCLE$}
+\end{center}
+\footnotesize
+\[ Prob(1\text{番目のチップが青}) \cdot Prob(2\text{番目のチップが青} | 1\text{番目のチップが青}) \]
+\[  = 0.3 \times 0.22 \]
+\[ = 0.066 \]
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{非復元抽出（続き）}
+
+\begin{itemize}
+
+\item 非復元抽出では、1番目が青であった場合の2番目のチップが青である確率は、1番目のチップが青である確率と等しくない。なぜなら、袋の構成が1回目の引きの結果によって変わるからである。
+\[ Prob(\text{青} | \text{青}) \ne Prob(\text{青}) \]
+
+\item \hl{非復元抽出では、引き操作は独立でない。}
+
+\item これは、標本サイズが小さいときに特に注意が必要である。たとえば、（巨大な）袋に10,000個のチップが入っている場合、1つのチップを引き出しても2回目の引きの確率にはそれほど大きな影響を与えない。
+
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{練習問題}
+
+\pq{ほとんどのカードゲームでは、カードは非復元で配られる。エースを引いてから3を引く確率は何か？最も近い答えを選びなさい。}
+
+\twocol{0.3}{0.6}{
+\begin{enumerate}[(a)]
+\item 0.0045
+\item 0.0059
+\solnMult{0.0060}
+\item 0.1553
+\end{enumerate}
+}
+{
+\soln{
+\[ P(\text{エース次に3}) = \frac{4}{52} \times \frac{4}{51} \approx 0.0060 \]
+}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
