@@ -1,0 +1,27 @@
+\frametitle{}
+
+\dq{245人の友達を持つ平均的なFacebookユーザーが、パワーユーザーと見なされる友達が70人以上いる確率は何か？}
+
+\twocol{0.5}{0.5}{
+\begin{center}
+\includegraphics[width=\textwidth]{4-3_binomial_distribution/figures/fb_power_user/fb_power_user_norm}
+\end{center}
+}
+{
+{\small
+\begin{align*}
+Z &= \frac{\text{観測値} - \text{平均}}{SD} \\
+  &= \frac{70 - 61.25}{6.78} = 1.29
+\end{align*}
+\[ P(Z > 1.29) = 1 - 0.9015 = 0.0985 \]
+}
+}
+
+\begin{beamerboxesrounded}[shadow = true, lower = code body]{}
+{\small \begin{verbatim}
+> pnorm(1.29)
+[1] 0.9014747
+\end{verbatim}
+}
+\end{beamerboxesrounded}
+
