@@ -1,0 +1,25 @@
+\frametitle{ひげと外れ値}
+\begin{itemize}
+
+\item 箱ひげ図の\hl{ひげ}は四分位数から最大 $1.5 \times IQR$ まで伸びる。
+\formula{
+\vspace{-0.5cm}
+\begin{align*}
+\text{上ひげの最大リーチ} &= Q3 + 1.5 \times IQR \\
+\text{下ひげの最大リーチ} &= Q1 - 1.5 \times IQR
+\end{align*}
+}
+\vspace{-0.5cm}
+{\small
+\begin{align*}
+IQR&: 20 - 10 = 10 \\
+\text{上ひげの最大リーチ}&= 20 + 1.5 \times 10 = 35 \\
+\text{下ひげの最大リーチ}&= 10 - 1.5 \times 10 = -5
+\end{align*}
+}
+
+\vspace{-0.25cm}
+\item 潜在的な\hl{外れ値}とは、ひげの最大リーチを超えた観測値である。残りのデータに対して極端に見える観測値である。
+
+\end{itemize}
+
