@@ -1,0 +1,339 @@
+---
+title: "データ入門"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    css: ../lab.css
+    toc: true
+    toc_float: true
+---
+
+```{r global-options, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, results = FALSE, fig.show = "hide", message = FALSE)
+library(tidyverse)
+library(openintro)
+```
+
+
+統計学を情報から知識へと変える分野と定義する人もいます。
+そのプロセスの最初のステップは、生の情報、つまりデータを要約し記述することです。
+このラボでは、飛行機、特に2013年にニューヨーク市の3つの主要空港から出発した国内線のランダムサンプルを探索します。
+これらの飛行機に関するデータの簡単なグラフおよび数値要約を生成し、遅延時間を探索します。
+これは大規模なデータセットであるため、途中でデータ処理とサブセット化の不可欠なスキルも学びます。
+
+## はじめに
+
+### パッケージの読み込み
+
+
+このラボでは、**tidyverse** スイートのパッケージを使用してデータを探索および視覚化します。
+データはOpenIntroラボのコンパニオンパッケージ**openintro**で見つけることができます。
+
+パッケージを読み込みましょう。
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+```
+
+### 再現可能なラボレポートの作成
+
+
+再現可能なラボレポートを作成するためにR Markdownを使用することを思い出してください。
+RStudioで、「New File」->「R Markdown...」に進み、「From Template」を選択してから、テンプレートのリストから「Lab Report for OpenIntro Statistics Labs」を選択します。
+
+このラボ、そして将来のすべてのラボで、これらのレポートの作成を開始する方法を説明する次のビデオをご覧ください。
+
+[**OpenIntroラボの基本的なR Markdown**](https://www.youtube.com/watch?v=Pdc368lS2hk) <iframe width="560" height="315" src="https://www.youtube.com/embed/Pdc368lS2hk" frameborder="0" allowfullscreen></iframe>
+
+### データ
+
+
+[運輸統計局](http://www.rita.dot.gov/bts/about/)（BTS）は、研究革新技術管理局（RITA）の一部である統計機関です。
+その名前が示すように、BTSは、このラボで扱うフライトデータなど、輸送データを収集し、利用できるようにしています。
+
+まず、`nycflights`データフレームを見てみましょう。
+データを読み込むには、コンソールに次のように入力します。
+
+```{r load-data}
+data(nycflights)
+```
+
+
+ワークスペースに表示されるデータセット`nycflights`は、各行が*観測値*を表し、各列が*変数*を表す*データ行列*です。
+Rはこのデータ形式を**データフレーム**と呼び、これはラボ全体で使用される用語です。
+このデータセットの場合、各*観測値*は単一のフライトです。
+
+変数の名前を表示するには、コマンドを入力します。
+
+```{r names}
+names(nycflights)
+```
+
+
+これにより、このデータフレーム内の変数の名前が返されます。
+**コードブック**（変数の説明）は、ヘルプファイルを表示することでアクセスできます。
+
+```{r help}
+?nycflights
+```
+
+
+変数の一つはフライトの航空会社（キャリア）を指し、以下のシステムに従ってコード化されています。
+
+-   `carrier`: 2文字の航空会社略語。
+
+    -   `9E`: Endeavor Air Inc.
+    -   `AA`: American Airlines Inc.
+    -   `AS`: Alaska Airlines Inc.
+    -   `B6`: JetBlue Airways
+    -   `DL`: Delta Air Lines Inc.
+    -   `EV`: ExpressJet Airlines Inc.
+    -   `F9`: Frontier Airlines Inc.
+    -   `FL`: AirTran Airways Corporation
+    -   `HA`: Hawaiian Airlines Inc.
+    -   `MQ`: Envoy Air
+    -   `OO`: SkyWest Airlines Inc.
+    -   `UA`: United Air Lines Inc.
+    -   `US`: US Airways Inc.
+    -   `VX`: Virgin America
+    -   `WN`: Southwest Airlines Co.
+    -   `YV`: Mesa Airlines Inc.
+
+データをよりよく理解するために、`glimpse`を使用してデータを素早く確認できることを思い出してください。
+
+```{r glimpse}
+glimpse(nycflights)
+```
+
+
+`nycflights`データフレームは膨大な情報源です。
+これらのデータで答えたいいくつかの質問について考えてみましょう。
+
+-   ロサンゼルス国際空港に向かうフライトはどれくらい遅延しましたか？
+-   出発遅延は月ごとにどのように異なりますか？
+-   ニューヨークの3つの主要空港のうち、出発便の定時出発率が最も良いのはどれですか？
+
+## 分析
+
+### ラボレポート
+
+
+分析を再現可能な形式で記録するために、**openintro**パッケージの一般的なラボレポートテンプレートを適応させることができます。
+その方法は上記のビデオをご覧ください。
+
+### 出発遅延
+
+
+まず、すべてのフライトの出発遅延の分布をヒストグラムで調べてみましょう。
+
+```{r hist-dep-delay}
+ggplot(data = nycflights, aes(x = dep_delay)) +
+  geom_histogram()
+```
+
+
+この関数は、`nycflights`データフレームの`dep_delay`変数をx軸にプロットするように指示します。
+また、`geom`（geometric objectの略）を定義し、作成するプロットのタイプを記述します。
+
+ヒストグラムは、数値データの単一分布の形状を見るのに一般的に非常に良い方法ですが、その形状は、データが異なるビン間でどのように分割されるかによって変化する可能性があります。
+使用したいビン幅を簡単に定義できます。
+
+```{r hist-dep-delay-bins}
+ggplot(data = nycflights, aes(x = dep_delay)) +
+  geom_histogram(binwidth = 15)
+ggplot(data = nycflights, aes(x = dep_delay)) +
+  geom_histogram(binwidth = 150)
+```
+
+1.  これら3つのヒストグラムを注意深く見てください。どのように比較されますか？あるヒストグラムで明らかになり、他のヒストグラムで不明瞭になっている特徴はありますか？
+
+
+ロサンゼルスに向かうフライトの遅延のみを視覚化したい場合は、まずその目的地（`dest == "LAX"`）のフライトを`filter`で抽出し、次にそれらのフライトのみの出発遅延のヒストグラムを作成する必要があります。
+
+```{r lax-flights-hist}
+lax_flights <- nycflights |>
+  filter(dest == "LAX")
+ggplot(data = lax_flights, aes(x = dep_delay)) +
+  geom_histogram()
+```
+
+
+これら2つのコマンドを解読しましょう（実際には4行のように見えますが、最初の2行の物理的なコードは実際には同じコマンドの一部です。可読性を高めるために`|>`の後に改行を追加するのは一般的です）。
+
+-   コマンド1: `nycflights`データフレームを取得し、LAXに向かうフライトを`filter`で抽出し、結果を`lax_flights`という新しいデータフレームとして保存します。
+
+    -   `==`は「等しい」を意味します。
+    -   `LAX`は文字列なので引用符で囲まれています。
+
+-   コマンド2: 以前のヒストグラムを作成するための`ggplot`呼び出しと基本的には同じですが、すべてのフライトではなくLAXに向かうフライトのより小さいデータフレームを使用しています。
+
+::: {#boxedtext}
+**論理演算子:** 特定の観測値（例：特定の空港からのフライト）をフィルタリングすることは、データフレームでよく関心事となります。ここでは、特定の特性を持つ観測値を残りのデータから分離して調べたい場合があります。
+これを行うには、`filter`関数と一連の**論理演算子**を使用できます。
+データ分析で最も一般的に使用される論理演算子は次のとおりです。
+
+-   `==` は「等しい」を意味します。
+-   `!=` は「等しくない」を意味します。
+-   `>` または `<` は「より大きい」または「より小さい」を意味します。
+-   `>=` または `<=` は「以上」または「以下」を意味します。
+:::
+
+
+これらのフライトの数値要約も取得できます。
+
+```{r lax-flights-summ}
+lax_flights |>
+  summarise(mean_dd   = mean(dep_delay),
+            median_dd = median(dep_delay),
+            n         = n())
+```
+
+
+`summarise`関数では、関心のある3つの異なる数値要約のリストを作成したことに注意してください。
+`mean_dd`、`median_dd`、`n`などのこれらの要素の名前はユーザー定義であり、自由にカスタマイズできます（ただし、名前にスペースを使用しないでください）。
+これらの要約統計量を計算するには、関数呼び出しも知っている必要があります。
+`n()`はサンプルサイズを報告することに注意してください。
+
+::: {#boxedtext}
+**要約統計量:** 単一の数値変数に対する要約統計量として有用な関数呼び出しを以下に示します。
+
+-   `mean`
+-   `median`
+-   `sd`
+-   `var`
+-   `IQR`
+-   `min`
+-   `max`
+
+これらの関数はそれぞれ、引数として単一のベクトルを取り、単一の値を返すことに注意してください。
+:::
+
+
+複数の基準に基づいてフィルタリングすることもできます。
+2月のサンフランシスコ（SFO）に向かうフライトに関心があるとしましょう。
+
+```{r sfo-feb-flights}
+sfo_feb_flights <- nycflights |>
+  filter(dest == "SFO", month == 2)
+```
+
+
+SFOに向かうフライトと2月のフライトの両方を望む場合は、条件をコンマで区切ることができることに注意してください。
+SFOに向かうフライトか2月のフライトのいずれかに関心がある場合は、コンマの代わりに`|`を使用できます。
+
+1.  2月のSFOに向かうフライトを含む新しいデータフレームを作成し、このデータフレームを`sfo_feb_flights`として保存してください。
+    この条件を満たすフライトはいくつありますか？
+
+2.  ヒストグラムと適切な要約統計量を使用して、これらのフライトの**到着**遅延の分布を記述してください。
+    **ヒント:** 使用する要約統計量は、分布の形状に依存するはずです。
+
+
+もう一つの有用なテクニックは、データフレーム内の様々なグループに対して要約統計量を素早く計算することです。
+例えば、`group_by`関数を使用して上記のコマンドを修正することで、各出発空港に対して同じ要約統計量を得ることができます。
+
+```{r summary-custom-list-origin}
+sfo_feb_flights |>
+  group_by(origin) |>
+  summarise(median_dd = median(dep_delay), iqr_dd = IQR(dep_delay), n_flights = n())
+```
+
+
+ここでは、まず`origin`でデータをグループ化し、次に要約統計量を計算しました。
+
+3.  `sfo_feb_flights`データフレーム内のフライトの`arr_delay`の中央値と四分位範囲を、航空会社別にグループ化して計算してください。最も到着遅延の変動が大きい航空会社はどれですか？
+
+### 月ごとの出発遅延
+
+
+NYC空港から出発するフライトの平均遅延が最も高い月はどれだと思いますか？
+
+この質問にどう答えるか考えてみましょう。
+
+-   まず、月ごとの出発遅延の平均を計算します。あなたが学んでいる新しい言語では、次のようにできます。
+
+    -   月で`group_by`し、次に
+    -   平均出発遅延を`summarise`します。
+
+-   次に、これらの平均遅延を`desc`ending順に`arrange`することができます。
+
+```{r mean-dep-delay-months}
+nycflights |>
+  group_by(month) |>
+  summarise(mean_dd = mean(dep_delay)) |>
+  arrange(desc(mean_dd))
+```
+
+1.  出発遅延が本当に嫌いで、NYCから出発する潜在的な出発遅延を最小限に抑える月に旅行を計画したいとします。1つの選択肢は、平均出発遅延が最も低い月を選択することです。もう1つの選択肢は、中央値出発遅延が最も低い月を選択することです。これら2つの選択肢の長所と短所は何ですか？
+
+### NYC空港の定時出発率
+
+
+NYCから飛行機で出発する場合、3つの主要なNYC空港のうち、出発便の定時出発率が最も良いのはどれかを知りたいとします。
+また、あなたにとって、5分未満の遅延は基本的に「定時」であると仮定します。5分以上の遅延は「遅延」と見なします。
+
+最も定時出発率の良い空港を決定するには、次のことができます。
+
+-   まず、各フライトを「定時」または「遅延」に分類し、
+-   次に、出発空港ごとにフライトをグループ化し、
+-   次に、各出発空港の定時出発率を計算し、
+-   最後に、定時出発率の降順で空港を並べ替えます。
+
+まず、`mutate`関数を使用して新しい変数を作成し、各フライトを「定時」または「遅延」に分類することから始めましょう。
+
+```{r dep-type}
+nycflights <- nycflights |>
+  mutate(dep_type = ifelse(dep_delay < 5, "on time", "delayed"))
+```
+
+
+`mutate`関数の最初の引数は、作成したい新しい変数（この場合は`dep_type`）の名前です。
+`dep_delay < 5`の場合、フライトを「on time」と分類し、そうでない場合、つまりフライトが5分以上遅延している場合は「delayed」と分類します。
+
+新しい`dep_type`変数を含む`nycflights`データフレームの新しいバージョンで、`nycflights`データフレームも上書きしていることに注意してください。
+
+残りのすべてのステップは1つのコードチャンクで処理できます。
+
+```{r ot-dep-rate}
+nycflights |>
+  group_by(origin) |>
+  summarise(ot_dep_rate = sum(dep_type == "on time") / n()) |>
+  arrange(desc(ot_dep_rate))
+```
+
+1.  定時出発率のみに基づいて空港を選択する場合、どのNYC空港から出発しますか？
+
+
+また、セグメント化された棒グラフを使用して、3つの空港間の定時出発率の分布を視覚化することもできます。
+
+```{r viz-origin-dep-type}
+ggplot(data = nycflights, aes(x = origin, fill = dep_type)) +
+  geom_bar()
+```
+
+------------------------------------------------------------------------
+
+## さらなる演習
+
+1.  各フライトの平均速度 `avg_speed`（mph）を含む新しい変数を含めるようにデータフレームを変更してください。
+    **ヒント:** 平均速度は、移動時間（時間単位）で距離を割ることで計算でき、`air_time`は分単位で与えられていることに注意してください。
+
+2.  `avg_speed` 対 `distance` の散布図を作成してください。
+    平均速度と距離の関係を記述してください。
+    **ヒント:** `geom_point()` を使用してください。
+
+3.  以下のプロットを再現してください。
+    **ヒント:** プロットされたデータフレームには、アメリカン航空、デルタ航空、ユナイテッド航空のフライトのみが含まれており、点は航空会社によって`color`が異なります。
+    プロットを再現したら、定時で目的地に到着できると予想される出発遅延のカットオフポイントを（おおよそ）決定してください。
+
+```{r plot-to-replicate, echo=FALSE, fig.show="asis", fig.width=7, fig.height=4}
+dl_aa_ua <- nycflights |>
+  filter(carrier == "AA" | carrier == "DL" | carrier == "UA")
+ggplot(data = dl_aa_ua, aes(x = dep_delay, y = arr_delay, color = carrier)) +
+  geom_point()
+```
+
+------------------------------------------------------------------------
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">![Creative Commons License](https://i.creativecommons.org/l/by-sa/4.0/88x31.png){style="border-width:0"}</a><br />この作品は、<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">クリエイティブ・コモンズ 表示 - 継承 4.0 国際ライセンス</a>の下に提供されています。
