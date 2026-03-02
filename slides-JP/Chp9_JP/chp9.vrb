@@ -1,7 +1,0 @@
-\frametitle{モデルの比較}
-\vspace{-8mm}
-
-\begin{center}
-\includegraphics[width=0.7\textwidth]{9-5_logistic_reg/figures/spam/ROC_comp.pdf}
-\end{center}
-
