@@ -30,7 +30,7 @@
 \renewcommand{\solnMult}[1]{\item #1}
 
 \setbeamertemplate{footline}{%
-  \insertframenumber\,/\,\inserttotalframenumber}
+  \insertframenumber\,/\,\the\numexpr\inserttotalframenumber+1\relax}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % プリアンブル
