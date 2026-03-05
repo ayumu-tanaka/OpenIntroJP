@@ -9,6 +9,7 @@ _OpenIntro Statistics_ の邦訳 **『データ分析のための統計学入門
 
 本リポジトリでは、スライド、Rラボ教材の日本語版をデータセットとともに提供しています。
 
+GitHub Pages: [https://ayumu-tanaka.github.io/OpenIntroJP/](https://ayumu-tanaka.github.io/OpenIntroJP/)
 
 ## 1. スライド
 _OpenIntro Statistics_ の各章に対応するプレゼンテーションスライドの日本語版が含まれています。内容は、元の英語版スライドを翻訳したものです。統計学の基本的な概念や手法をわかりやすく説明しています。
